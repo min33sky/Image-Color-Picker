@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function ImageUpload() {
   const [image, setImage] = useState<string | null>(null);
+  const labelRef = useRef<HTMLLabelElement>(null);
 
   const handleOnChangePicture: React.ChangeEventHandler<
     HTMLInputElement
@@ -12,6 +13,30 @@ export default function ImageUpload() {
       // 미리보기 이미지 설정
       const previewImage = URL.createObjectURL(e.target.files[0]);
       setImage(previewImage);
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    labelRef.current?.classList.add('bg-indigo-900/40');
+  };
+
+  const handleDragEnd = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    labelRef.current?.classList.remove('bg-indigo-900/40');
+  };
+
+  const handleImageDrop = (e: React.DragEvent<HTMLLabelElement>) => {
+    e.preventDefault();
+    if (
+      e.dataTransfer.files &&
+      e.dataTransfer.files.length > 0 &&
+      labelRef.current
+    ) {
+      console.log('zzz');
+      const files = e.dataTransfer.files[0];
+      setImage(URL.createObjectURL(files));
+      labelRef.current?.classList.remove('bg-indigo-900/40');
     }
   };
 
@@ -26,12 +51,17 @@ export default function ImageUpload() {
   return (
     <div className="flex flex-col">
       <label
-        title="클릭하여 이미지를 업로드하세요."
+        ref={labelRef}
+        title="클릭 또는 드래그로 이미지를 업로드하세요."
         className="
             aspect-w-16 aspect-h-9 relative flex cursor-pointer
             items-center justify-center rounded-md
-            border-2 border-dashed border-gray-300 text-gray-300 transition
-            hover:border-gray-100 hover:text-gray-100"
+            border-2 border-dashed border-gray-300  text-gray-300
+            transition hover:border-gray-100 hover:text-gray-100"
+        onDragOver={handleDragOver}
+        onDragEnd={handleDragEnd}
+        onDragLeave={handleDragEnd}
+        onDrop={handleImageDrop}
       >
         {image && <img src={image} className="object-contain" />}
         {!image && (
