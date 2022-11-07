@@ -24,7 +24,7 @@ export default function ImageUpload() {
   }, [image]);
 
   return (
-    <div className="flex w-[90vmin] flex-col space-y-4 rounded-lg bg-slate-500 px-4 py-10">
+    <div className="flex flex-col">
       <label
         className="
             aspect-w-16 aspect-h-9 relative flex cursor-pointer
@@ -56,36 +56,6 @@ export default function ImageUpload() {
           onChange={handleOnChangePicture}
         />
       </label>
-
-      <div className="flex items-center justify-between">
-        <button className="bg-slate-700 p-2">Color Pick</button>
-        <div>색상 보여주기</div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <div aria-label="RGB Value" className="relative">
-          <input
-            type="text"
-            className="w-full p-2"
-            placeholder="RGB Value"
-            readOnly
-          />
-          {/* 클립보드 아이콘 */}
-        </div>
-        <div aria-label="Hex Value" className="relative">
-          <input
-            type="text"
-            className="w-full p-2"
-            placeholder="HEX Value"
-            readOnly
-          />
-          {/* 클립보드 아이콘 */}
-        </div>
-      </div>
-
-      <div aria-label="Error Message">
-        <p></p>
-      </div>
     </div>
   );
 }
