@@ -1,6 +1,11 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { rgbToHex } from '../utils/rgbToHex';
 import ImageUpload from './ImageUpload';
+import {
+  ClipboardIcon,
+  MagnifyingGlassIcon,
+} from '@heroicons/react/24/outline';
+import { toast } from 'react-hot-toast';
 
 declare global {
   interface Window {
@@ -45,22 +50,35 @@ export default function ColorPicker() {
     }
   };
 
+  const handleClipboard = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const value = e.currentTarget.name;
+    navigator.clipboard.writeText(value === 'rgb' ? rgbValue : hexValue);
+    toast.success('클립보드에 복사되었습니다.');
+  };
+
   return (
-    <div className="flex flex-col space-y-4 rounded-lg bg-slate-700 px-4 py-10">
+    <div className="flex flex-col space-y-8 rounded-lg bg-slate-700 px-8 py-20">
+      <header>
+        <h1 className="text-center text-3xl font-bold text-slate-200">
+          Image Color Picker
+        </h1>
+      </header>
+
       <ImageUpload />
 
       <div className="flex items-center justify-between">
         <button
           onClick={handleColorPick}
-          className="rounded-md bg-slate-800 p-3 transition hover:bg-slate-900"
+          className="flex items-center gap-2 rounded-md bg-slate-800 p-3 transition hover:bg-slate-900"
         >
+          <MagnifyingGlassIcon className="h-6 w-6 text-slate-200" />
           Color Pick
         </button>
         <div
           style={{
             backgroundColor: `${hexValue}`,
           }}
-          className={`h-8 w-8 rounded-full border`}
+          className={`h-8 w-8 rounded-full border-2 border-slate-400`}
         ></div>
       </div>
 
@@ -68,22 +86,26 @@ export default function ColorPicker() {
         <div aria-label="RGB Value" className="relative">
           <input
             type="text"
-            className="w-full border-b bg-transparent p-2"
-            placeholder="RGB Value"
+            className="w-full select-none border-b border-b-slate-400 bg-transparent p-2 outline-none"
+            placeholder="RGB"
             defaultValue={rgbValue}
             readOnly
           />
-          {/* 클립보드 아이콘 */}
+          <button name="rgb" onClick={handleClipboard}>
+            <ClipboardIcon className="absolute right-0 top-1/2 h-6 w-6 -translate-y-1/2 transition hover:text-slate-50" />
+          </button>
         </div>
         <div aria-label="Hex Value" className="relative">
           <input
             type="text"
-            className="w-full border-b bg-transparent p-2"
-            placeholder="HEX Value"
+            className="w-full select-none border-b border-b-slate-400 bg-transparent p-2 outline-none"
+            placeholder="HEX"
             value={hexValue}
             readOnly
           />
-          {/* 클립보드 아이콘 */}
+          <button name="hex" onClick={handleClipboard}>
+            <ClipboardIcon className="absolute right-0 top-1/2 h-6 w-6 -translate-y-1/2 transition hover:text-slate-50" />
+          </button>
         </div>
       </div>
 

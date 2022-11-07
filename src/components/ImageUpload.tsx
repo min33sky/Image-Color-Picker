@@ -26,6 +26,7 @@ export default function ImageUpload() {
   return (
     <div className="flex flex-col">
       <label
+        title="클릭하여 이미지를 업로드하세요."
         className="
             aspect-w-16 aspect-h-9 relative flex cursor-pointer
             items-center justify-center rounded-md
