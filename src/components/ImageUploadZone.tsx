@@ -1,4 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 
 /**
  * 이미지 업로드 컴포넌트
@@ -6,9 +7,22 @@ import React, { useEffect, useRef, useState } from 'react';
  * @description 이미지를 드래그 또는 클릭으로 업로드 할 수 있습니다.
  */
 export default function ImageUploadZone() {
-  const [image, setImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(null);
   const labelRef = useRef<HTMLLabelElement>(null);
 
+  /**
+   * 미리보기 이미지 제거
+   */
+  const removeImage = useCallback(() => {
+    if (imageUrl) {
+      URL.revokeObjectURL(imageUrl);
+      setImageUrl(null);
+    }
+  }, [imageUrl]);
+
+  /**
+   * 이미지 업로드 핸들러
+   */
   const handleOnChangePicture: React.ChangeEventHandler<
     HTMLInputElement
   > = async (e) => {
@@ -16,7 +30,11 @@ export default function ImageUploadZone() {
       const file = e.target.files[0];
       // 미리보기 이미지 설정
       const previewImage = URL.createObjectURL(file);
-      setImage(previewImage);
+      setImageUrl(previewImage);
+
+      //? 같은 파일을 다시 선택했을 때, onChange 이벤트가 발생하지 않는다.
+      //? 그래서 초기화를 해줘야 다시 선택해도 이벤트가 Trigger 된다.
+      e.target.value = '';
     }
   };
 
@@ -38,21 +56,32 @@ export default function ImageUploadZone() {
       labelRef.current
     ) {
       const files = e.dataTransfer.files[0];
-      setImage(URL.createObjectURL(files));
+      setImageUrl(URL.createObjectURL(files));
       labelRef.current?.classList.remove('bg-indigo-900/10');
     }
   };
 
   useEffect(() => {
     return () => {
-      if (image) {
-        URL.revokeObjectURL(image); // 브라우저 메모리 해제
+      if (imageUrl) {
+        URL.revokeObjectURL(imageUrl); // 브라우저 메모리 해제
       }
     };
-  }, [image]);
+  }, [imageUrl]);
 
   return (
-    <div aria-label="Area for image upload" className="flex flex-col">
+    <div aria-label="Area for image upload" className="relative flex flex-col">
+      {imageUrl && (
+        <button
+          aria-label="Remove Preview Image"
+          title="미리보기 이미지 제거"
+          onClick={removeImage}
+          className="absolute top-2 right-2 z-50"
+        >
+          <XMarkIcon className="h-6 w-6 text-slate-400  transition-colors duration-200 hover:text-red-500" />
+        </button>
+      )}
+
       <label
         ref={labelRef}
         title="클릭 또는 드래그로 이미지를 업로드하세요."
@@ -66,8 +95,13 @@ export default function ImageUploadZone() {
         onDragLeave={handleDragEnd}
         onDrop={handleImageDrop}
       >
-        {image && <img src={image} className="object-contain" />}
-        {!image && (
+        {imageUrl && (
+          <>
+            <img src={imageUrl} className="object-contain" />
+          </>
+        )}
+
+        {!imageUrl && (
           <svg
             className="absolute top-1/2 left-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 transform"
             stroke="currentColor"

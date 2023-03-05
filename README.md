@@ -2,6 +2,10 @@
 
 A simple tool to pick colors from images.
 
+## Demo
+
+[미리보기](https://imgcolorpick.netlify.app/)
+
 ## Stack
 
 - [React](https://reactjs.org/)
