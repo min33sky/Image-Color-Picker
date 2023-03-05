@@ -1,7 +1,7 @@
 {
   "name": "image-color-picker",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -18,13 +18,13 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@types/react": "^18.0.24",
     "@types/react-dom": "^18.0.8",
-    "@vitejs/plugin-react": "^2.2.0",
+    "@vitejs/plugin-react": "^3",
     "autoprefixer": "^10.4.13",
     "postcss": "^8.4.18",
     "prettier": "^2.7.1",
-    "prettier-plugin-tailwindcss": "^0.1.13",
-    "tailwindcss": "^3.2.2",
-    "typescript": "^4.6.4",
-    "vite": "^3.2.3"
+    "prettier-plugin-tailwindcss": "latest",
+    "tailwindcss": "^3.2.7",
+    "typescript": "^4.9.5",
+    "vite": "^4"
   }
 }
