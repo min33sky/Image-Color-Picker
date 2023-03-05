@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { rgbToHex } from '../utils/rgbToHex';
-import ImageUpload from './ImageUpload';
+import ImageUploadZone from './ImageUploadZone';
 import {
   ClipboardIcon,
   MagnifyingGlassIcon,
@@ -54,31 +53,44 @@ export default function ColorPicker() {
     }
   };
 
+  /**
+   * 클립보드 복사 핸들러
+   */
   const handleClipboard = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!rgbValue || !hexValue) {
+      toast.error('먼저 이미지의 색상을 추출해주세요.');
+      return;
+    }
+
     const value = e.currentTarget.name;
     navigator.clipboard.writeText(value === 'rgb' ? rgbValue : hexValue);
     toast.success('클립보드에 복사되었습니다.');
   };
 
   return (
-    <div className="flex flex-col space-y-8 rounded-lg bg-slate-700 px-8 py-20">
+    <div className="flex flex-col space-y-8 rounded-lg bg-slate-100 px-8 py-10">
       <header>
-        <h1 className="text-center text-3xl font-bold text-slate-200">
-          Image Color Picker
+        <h1 className="text-center text-2xl font-semibold text-slate-700">
+          이미지 색상 추출기
         </h1>
       </header>
 
-      <ImageUpload />
+      <ImageUploadZone />
 
       <div className="flex items-center justify-between">
         <button
+          aria-label="Button for Color Pick"
+          title="색상 추출"
           onClick={handleColorPick}
-          className="flex items-center gap-2 rounded-md bg-slate-800 p-3 transition hover:bg-slate-900"
+          className="flex items-center gap-2 rounded-md bg-slate-600 px-4 py-2 transition-colors duration-200 hover:bg-slate-900"
         >
           <MagnifyingGlassIcon className="h-6 w-6 text-slate-200" />
-          Color Pick
+          <p className="text-slate-100">Color Pick</p>
         </button>
+
         <div
+          aria-label="Color Preview"
+          title="색상 미리보기"
           style={{
             backgroundColor: `${hexValue}`,
           }}
@@ -87,28 +99,41 @@ export default function ColorPicker() {
       </div>
 
       <div className="grid grid-cols-2 gap-2">
-        <div aria-label="RGB Value" className="relative">
+        <div className="relative">
           <input
+            aria-label="Input for RGB Value"
             type="text"
             className="w-full select-none border-b border-b-slate-400 bg-transparent p-2 outline-none"
             placeholder="RGB"
             defaultValue={rgbValue}
             readOnly
           />
-          <button name="rgb" onClick={handleClipboard}>
-            <ClipboardIcon className="absolute right-0 top-1/2 h-6 w-6 -translate-y-1/2 transition hover:text-slate-50" />
+          <button
+            aria-label="Button to copy RGB Value"
+            title="클립보드에 복사"
+            name="rgb"
+            onClick={handleClipboard}
+          >
+            <ClipboardIcon className="absolute right-0 top-1/2 h-6 w-6 -translate-y-1/2 transition hover:text-yellow-500" />
           </button>
         </div>
-        <div aria-label="Hex Value" className="relative">
+
+        <div className="relative">
           <input
+            aria-label="Input for Hex Value"
             type="text"
             className="w-full select-none border-b border-b-slate-400 bg-transparent p-2 outline-none"
             placeholder="HEX"
             value={hexValue}
             readOnly
           />
-          <button name="hex" onClick={handleClipboard}>
-            <ClipboardIcon className="absolute right-0 top-1/2 h-6 w-6 -translate-y-1/2 transition hover:text-slate-50" />
+          <button
+            aria-label="Button to copy Hex Value"
+            title="클립보드에 복사"
+            name="hex"
+            onClick={handleClipboard}
+          >
+            <ClipboardIcon className="absolute right-0 top-1/2 h-6 w-6 -translate-y-1/2 transition hover:text-yellow-500" />
           </button>
         </div>
       </div>

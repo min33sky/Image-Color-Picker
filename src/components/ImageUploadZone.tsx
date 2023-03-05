@@ -1,6 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-export default function ImageUpload() {
+/**
+ * 이미지 업로드 컴포넌트
+ *
+ * @description 이미지를 드래그 또는 클릭으로 업로드 할 수 있습니다.
+ */
+export default function ImageUploadZone() {
   const [image, setImage] = useState<string | null>(null);
   const labelRef = useRef<HTMLLabelElement>(null);
 
@@ -9,21 +14,20 @@ export default function ImageUpload() {
   > = async (e) => {
     if (e.target.files && e.target.files.length > 0) {
       const file = e.target.files[0];
-
       // 미리보기 이미지 설정
-      const previewImage = URL.createObjectURL(e.target.files[0]);
+      const previewImage = URL.createObjectURL(file);
       setImage(previewImage);
     }
   };
 
   const handleDragOver = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
-    labelRef.current?.classList.add('bg-indigo-900/40');
+    labelRef.current?.classList.add('bg-indigo-900/10');
   };
 
   const handleDragEnd = (e: React.DragEvent<HTMLLabelElement>) => {
     e.preventDefault();
-    labelRef.current?.classList.remove('bg-indigo-900/40');
+    labelRef.current?.classList.remove('bg-indigo-900/10');
   };
 
   const handleImageDrop = (e: React.DragEvent<HTMLLabelElement>) => {
@@ -33,31 +37,30 @@ export default function ImageUpload() {
       e.dataTransfer.files.length > 0 &&
       labelRef.current
     ) {
-      console.log('zzz');
       const files = e.dataTransfer.files[0];
       setImage(URL.createObjectURL(files));
-      labelRef.current?.classList.remove('bg-indigo-900/40');
+      labelRef.current?.classList.remove('bg-indigo-900/10');
     }
   };
 
   useEffect(() => {
     return () => {
       if (image) {
-        URL.revokeObjectURL(image); // 메모리 해제
+        URL.revokeObjectURL(image); // 브라우저 메모리 해제
       }
     };
   }, [image]);
 
   return (
-    <div className="flex flex-col">
+    <div aria-label="Area for image upload" className="flex flex-col">
       <label
         ref={labelRef}
         title="클릭 또는 드래그로 이미지를 업로드하세요."
         className="
             aspect-w-16 aspect-h-9 relative flex cursor-pointer
             items-center justify-center rounded-md
-            border-2 border-dashed border-gray-300  text-gray-300
-            transition hover:border-gray-100 hover:text-gray-100"
+            border-2 border-dashed border-slate-400  text-slate-400
+            transition hover:border-slate-800 hover:text-slate-800"
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
         onDragLeave={handleDragEnd}
@@ -80,6 +83,7 @@ export default function ImageUpload() {
             />
           </svg>
         )}
+
         <input
           className="hidden"
           type="file"
