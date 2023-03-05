@@ -29,21 +29,25 @@ export default function ColorPicker() {
     }
   }, []);
 
+  /**
+   * 색상 추출 핸들러
+   *
+   * @description image의 Hex, RGB 값을 추출하여 상태에 저장
+   */
   const handleColorPick = async () => {
     if (eyeDropper.current) {
-      console.log('클릭');
       try {
         const colorValue = await eyeDropper.current.open();
-        const rgb = colorValue.sRGBHex;
+        const hex = colorValue.sRGBHex;
+        const rgbArr = [];
 
-        const rgbArr = rgb
-          .replace(/[^0-9]/g, ' ')
-          .trim()
-          .split(' ')
-          .filter((n: any) => !!n);
+        //? hex 값을 rgb로 변환 (ex. #ffffff -> rgb(255, 255, 255)
+        for (let i = 1; i < hex.length; i += 2) {
+          rgbArr.push(parseInt(hex[i] + hex[i + 1], 16));
+        }
 
-        setRgbValue(rgb);
-        setHexValue(rgbToHex(rgbArr[0], rgbArr[1], rgbArr[2]));
+        setHexValue(hex.toUpperCase());
+        setRgbValue(`RGB(${rgbArr.join(', ')})`);
       } catch (e: any) {
         console.log(e.message);
       }
